@@ -1,8 +1,11 @@
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from collections import namedtuple
 Item = namedtuple("Item", ['index', 'value', 'weight'])
+
+from greedy_naive import greedy_naive
 
 def solve_it(input_data):
     # Modify this code to run your optimization algorithm
@@ -21,17 +24,16 @@ def solve_it(input_data):
         parts = line.split()
         items.append(Item(i-1, int(parts[0]), int(parts[1])))
 
-    # a trivial algorithm for filling the knapsack
-    # it takes items in-order until the knapsack is full
+    solution = greedy_naive(items, capacity)
+
     value = 0
-    weight = 0
     taken = [0]*len(items)
 
-    for item in items:
-        if weight + item.weight <= capacity:
-            taken[item.index] = 1
-            value += item.value
-            weight += item.weight
+    for item in solution:
+        taken[item.index] = 1
+
+    for item in taken:
+        value += items[item].value
     
     # prepare the solution in the specified output format
     output_data = str(value) + ' ' + str(0) + '\n'
