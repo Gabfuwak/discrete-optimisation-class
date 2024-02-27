@@ -6,6 +6,7 @@ from collections import namedtuple
 Item = namedtuple("Item", ['index', 'value', 'weight'])
 
 from greedy_naive import greedy_naive
+from optimal_naive import optimal_naive
 
 def solve_it(input_data):
     # Modify this code to run your optimization algorithm
@@ -24,7 +25,8 @@ def solve_it(input_data):
         parts = line.split()
         items.append(Item(i-1, int(parts[0]), int(parts[1])))
 
-    solution = greedy_naive(items, capacity)  
+    # solution = greedy_naive(items, capacity)  
+    solution = optimal_naive(items, capacity)
     value = 0
     taken = [0]*len(items)
 
