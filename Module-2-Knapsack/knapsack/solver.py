@@ -24,16 +24,13 @@ def solve_it(input_data):
         parts = line.split()
         items.append(Item(i-1, int(parts[0]), int(parts[1])))
 
-    solution = greedy_naive(items, capacity)
-
+    solution = greedy_naive(items, capacity)  
     value = 0
     taken = [0]*len(items)
 
     for item in solution:
         taken[item.index] = 1
-
-    for item in taken:
-        value += items[item].value
+        value += item.value
     
     # prepare the solution in the specified output format
     output_data = str(value) + ' ' + str(0) + '\n'
