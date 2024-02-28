@@ -2,9 +2,10 @@ from collections import namedtuple
 Item = namedtuple("Item", ['index', 'value', 'weight'])
 
 def optimal_dynamic(items, capacity):
+	# This function gives the wrong value (close approcimate but not quite the right value)
     memo_table = {}
 
-    def hash_knapsack(knapsack, knap_capacity):
+    def hash_knapsack(knapsack):
         ret = ""
         temp = []
         for item in knapsack:
@@ -15,15 +16,14 @@ def optimal_dynamic(items, capacity):
         for item in knapsack: # nothing was done for hash collisions, hopefully not too much will happen
             index = temp.index(item.index) # maybe slow
             ret += str(index)
-            ret += str(item.value%100)
-            ret += str(item.weight%100)
-        ret += str(knap_capacity%100)
+            ret += str(item.value)
+            ret += str(item.weight)
 
-        return int(ret)
+        return ret
 
     def recursive_dynamic(items, capacity):
         # Copy paste of the naive recursive function with a check in the memo table
-        hash = hash_knapsack(items, capacity)
+        hash = hash_knapsack(items)
         if hash in memo_table.keys():
             return memo_table[hash]
 
@@ -34,10 +34,9 @@ def optimal_dynamic(items, capacity):
         count = 0
 
         for item in items:
-            count += 1
             new_capacity = capacity - item.weight
             new_items = items[:]
-            new_items.pop(count-1)
+            new_items.pop(count)
 
             candidate_value = 0
             candidate = []
@@ -54,6 +53,8 @@ def optimal_dynamic(items, capacity):
                 best_val = candidate_value
                 best_knapsack = candidate
                 best_capacity = sum([item.weight for item in best_knapsack])
+                
+            count +=1
 
         memo_table[hash] = best_knapsack
         return best_knapsack
