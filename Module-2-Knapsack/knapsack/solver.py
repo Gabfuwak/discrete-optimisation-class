@@ -28,13 +28,11 @@ def solve_it(input_data):
 
     # solution = greedy_naive(items, capacity)  
     # solution = optimal_naive(items, capacity)
-    solution = optimal_dynamic(items, capacity)
+    taken = optimal_dynamic(items, capacity)
     value = 0
-    taken = [0]*len(items)
-
-    for item in solution:
-        taken[item.index] = 1
-        value += item.value
+    #taken = [0]*len(items)
+    for item, istaken in enumerate(taken):
+        value += items[item].value * istaken
     
     # prepare the solution in the specified output format
     output_data = str(value) + ' ' + str(0) + '\n'

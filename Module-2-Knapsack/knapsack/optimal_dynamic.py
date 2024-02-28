@@ -2,62 +2,34 @@ from collections import namedtuple
 Item = namedtuple("Item", ['index', 'value', 'weight'])
 
 def optimal_dynamic(items, capacity):
-	# This function gives the wrong value (close approcimate but not quite the right value)
-    memo_table = {}
+    nb_items = len(items)
 
-    def hash_knapsack(knapsack):
-        ret = ""
-        temp = []
-        for item in knapsack:
-            temp.append(item.index)
+    # row = items
+    # column = capacity.
+    memo = [[0 for _ in range(capacity+1)] for _ in range(nb_items+1)]
+    #memo = np.zeros((nb_items +1, capacity+1), dtype = int)
 
-        temp.sort() # we sort to get rid of symetries
+    # Populate the table
+    for cap in range(1, capacity+1):
+        for item in range(1, nb_items+1):
+            if items[item-1].weight <= cap:
+                memo[item][cap]  = max(memo[item-1][cap], items[item-1].value + memo[item-1][cap - items[item-1].weight])
+            else:
+                memo[item][cap] = memo[item-1][cap]
 
-        for item in knapsack: # nothing was done for hash collisions, hopefully not too much will happen
-            index = temp.index(item.index) # maybe slow
-            ret += str(index)
-            ret += str(item.value)
-            ret += str(item.weight)
-
-        return ret
-
-    def recursive_dynamic(items, capacity):
-        # Copy paste of the naive recursive function with a check in the memo table
-        hash = hash_knapsack(items)
-        if hash in memo_table.keys():
-            return memo_table[hash]
+    # Trace back
+    taken = [0] * nb_items
+    curr_cap = capacity-1
+    for item in range(nb_items-1, -1, -1):
+        if memo[item+1][curr_cap+1] != memo[item][curr_cap+1]:
+            taken[item] = 1
+            curr_cap -= items[item].weight
 
 
-        best_knapsack = []
-        best_val = 0
-        best_cap = capacity
-        count = 0
+    return taken
 
-        for item in items:
-            new_capacity = capacity - item.weight
-            new_items = items[:]
-            new_items.pop(count)
 
-            candidate_value = 0
-            candidate = []
+    
 
-            if new_capacity >= 0:
-                candidate_value = item.value 
-                candidate = [item]
-                candidate += recursive_dynamic(new_items, new_capacity)
-                
-                for candidate_item in candidate:
-                    candidate_value += candidate_item.value
-
-            if candidate_value > best_val:
-                best_val = candidate_value
-                best_knapsack = candidate
-                best_capacity = sum([item.weight for item in best_knapsack])
-                
-            count +=1
-
-        memo_table[hash] = best_knapsack
-        return best_knapsack
-
-    return recursive_dynamic(items, capacity)
+    
     
