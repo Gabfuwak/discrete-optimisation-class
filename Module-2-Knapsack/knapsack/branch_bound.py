@@ -40,6 +40,16 @@ def get_value(items, taken):
 		ret += (items[i].value * taken[i]) 
 	return ret
 
+def greedy_branching(queue):
+	# returns the index of the node with highest value in the queue
+	best_node_index = 0
+	best_node_value = queue[0].value
+
+	for i, node in enumerate(queue):
+		if node.value > best_node_value:
+			best_node_index = i
+			best_node_value = node.value
+	return best_node_index
 
 
 def branch_and_bound(items, capacity):
@@ -54,8 +64,8 @@ def branch_and_bound(items, capacity):
 	nb_bound_equals = 0
 	nb_bound_worse = 0
 	while queue:
-		queue = sorted(queue, key=lambda node: node.value, reverse=True) # sort nodes by current value (greedy first search)
-		node = queue.pop(0)
+
+		node = queue.pop(greedy_branching(queue))
 
 		# check feasible
 		if get_left_capacity(items, node.curr_taken, capacity) < 0:
